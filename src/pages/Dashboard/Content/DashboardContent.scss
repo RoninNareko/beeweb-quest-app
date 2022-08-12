@@ -1,0 +1,25 @@
+.dashboard-content-section {
+  display: flex;
+  flex-wrap: nowrap;
+  height: 100%;
+  width: 100%;
+  background: red;
+}
+//kek
+.toDo,
+.done,
+.backlog {
+  display: flex;
+  flex-wrap: nowrap;
+  background: green;
+  border: 1px solid yellow;
+  width: 100%;
+  flex-direction: column;
+  padding: 20px;
+}
+.card-section {
+  margin-bottom: 10px;
+}
+.editor-card {
+  margin-top: 5px !important;
+}
