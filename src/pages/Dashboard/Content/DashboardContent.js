@@ -1,11 +1,13 @@
 import { selectBacklogTasks } from "../../../store/selectors/backlogSelectors";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import TaskCard from "./TaskCard";
 import Header from "./Header";
 import { selectInProgressTasks } from "../../../store/selectors/InProgressSelectors";
 import { selectDoneTasks } from "../../../store/selectors/doneSelectors";
 import "./DashboardContent.scss";
+import { useEffect } from "react";
+import { fetchTasks } from "../../../store/asyncActions/fetchTasks";
 
 const TaskBlock = ({ tasks = [], InProgress = false, done = false }) => {
   return (
@@ -17,7 +19,7 @@ const TaskBlock = ({ tasks = [], InProgress = false, done = false }) => {
             <TaskCard
               InProgress={InProgress}
               done={done}
-              key={el.id}
+              key={el.id + 1}
               taskData={el}
               allTasks={tasks}
               isLastTask={isLastTask}
@@ -60,7 +62,12 @@ function DashboardContent(params) {
   const backlogTasks = useSelector(selectBacklogTasks);
   const inProgressTasks = useSelector(selectInProgressTasks);
   const doneTasks = useSelector(selectDoneTasks);
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchTasks("backlog"));
+    dispatch(fetchTasks("inProgress"));
+    dispatch(fetchTasks("done"));
+  }, [dispatch]);
   return (
     <section className="dashboard-content-section">
       <Backlog backlogTasks={backlogTasks} />

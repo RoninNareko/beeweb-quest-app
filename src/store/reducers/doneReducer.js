@@ -1,4 +1,4 @@
-import { ADD_DONE_TASK } from "../actions/done";
+import { ADD_DONE_TASK, FETCH_DONE_TASK } from "../actions/done";
 
 const defaultState = {
   tasks: [],
@@ -12,6 +12,10 @@ export function doneReducer(state = defaultState, action) {
         editorValue: action.payload,
       };
       return { ...state, tasks: [...state.tasks, newTask] };
+    }
+    case FETCH_DONE_TASK: {
+      const tasks = action.payload;
+      return { tasks };
     }
     default:
       return state;

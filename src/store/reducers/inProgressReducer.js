@@ -1,4 +1,7 @@
-import { ADD_IN_PROGRESS_TASK } from "../actions/inProgress";
+import {
+  ADD_IN_PROGRESS_TASK,
+  FETCH_IN_PROGRESS_TASKS,
+} from "../actions/inProgress";
 
 const defaultState = {
   tasks: [],
@@ -12,6 +15,10 @@ export function inProgressReducer(state = defaultState, action) {
         editorValue: action.payload,
       };
       return { ...state, tasks: [...state.tasks, newTask] };
+    }
+    case FETCH_IN_PROGRESS_TASKS: {
+      const tasks = action.payload;
+      return { tasks };
     }
     default:
       return state;
