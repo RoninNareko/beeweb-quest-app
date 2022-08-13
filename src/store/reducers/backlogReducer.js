@@ -11,7 +11,10 @@ export function backlogReducer(state = defaultState, action) {
         id: Math.floor(Math.random() * 100),
         editorValue: action.payload,
       };
-      return { ...state, tasks: [...state.tasks, newTask] };
+      return {
+        ...state,
+        tasks: state.tasks ? [...state.tasks, newTask] : [newTask],
+      };
     }
     case FETCH_BACKLOG_TASKS: {
       const tasks = action.payload;

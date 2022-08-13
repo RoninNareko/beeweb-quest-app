@@ -13,9 +13,9 @@ const TaskCard = ({ taskData, allTasks, isLastTask, InProgress, done }) => {
   const dispatch = useDispatch();
   const [isOpen, setOpen] = useState(false);
   const [editorValue, setEditorValue] = useState(null);
+  console.log("editorValue", editorValue);
   useEffect(() => {
     if (taskData && taskData.editorValue) {
-      console.log("taskData.editorValue", taskData.editorValue);
       setEditorValue(taskData.editorValue);
     }
   }, [taskData]);
@@ -26,25 +26,26 @@ const TaskCard = ({ taskData, allTasks, isLastTask, InProgress, done }) => {
   const addNewTask = async (e) => {
     e.preventDefault();
     setOpen(false);
+    const editorValueData = { editorValue: editorValue };
     if (InProgress) {
       await setDoc(doc(db, "inProgress", "narek"), {
         allTasks: !allTasks
-          ? editorValue
-          : [...allTasks, { editorValue: editorValue }],
+          ? [editorValueData]
+          : [...allTasks, editorValueData],
       });
       dispatch(addInProgressTaskActionCreator(editorValue));
     } else if (done) {
       await setDoc(doc(db, "done", "narek"), {
         allTasks: !allTasks
-          ? editorValue
-          : [...allTasks, { editorValue: editorValue }],
+          ? [editorValueData]
+          : [...allTasks, editorValueData],
       });
       dispatch(addDoneTaskActionCreator(editorValue));
     } else {
       await setDoc(doc(db, "backlog", "narek"), {
         allTasks: !allTasks
-          ? editorValue
-          : [...allTasks, { editorValue: editorValue }],
+          ? [editorValueData]
+          : [...allTasks, editorValueData],
       });
 
       dispatch(addBacklogTaskActionCreator(editorValue));

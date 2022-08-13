@@ -5,9 +5,10 @@ import TaskCard from "./TaskCard";
 import Header from "./Header";
 import { selectInProgressTasks } from "../../../store/selectors/InProgressSelectors";
 import { selectDoneTasks } from "../../../store/selectors/doneSelectors";
-import "./DashboardContent.scss";
 import { useEffect } from "react";
 import { fetchTasks } from "../../../store/asyncActions/fetchTasks";
+
+import "./DashboardContent.scss";
 
 const TaskBlock = ({ tasks = [], InProgress = false, done = false }) => {
   return (
