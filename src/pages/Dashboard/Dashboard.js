@@ -19,11 +19,7 @@ const Dashboard = () => (
               height: "100%",
               borderRight: 0,
             }}
-            items={[
-              {
-                label: "Task List",
-              },
-            ]}
+            items={[]}
           />
         </Sider>
         <Layout

@@ -1,10 +1,13 @@
 import { Button, Form, Input } from "antd";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../../config/firebase";
 
 import "./Signup.scss";
 
 export default function Signup(params) {
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     console.log("Success:", values);
+    await setDoc(doc(db, "users", values["login"]), values);
   };
 
   const onFinishFailed = (errorInfo) => {

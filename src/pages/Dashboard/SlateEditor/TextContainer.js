@@ -31,24 +31,27 @@ const TextContainer = ({ editorValue }) => {
   }, [editorValue]);
 
   return (
-    <Slate editor={editor} value={value}>
-      <Editable
-        renderElement={renderElement}
-        renderLeaf={renderLeaf}
-        placeholder="TEXT CONTAINER"
-        spellCheck
-        autoFocus
-        onKeyDown={(event) => {
-          for (const hotkey in HOTKEYS) {
-            if (isHotkey(hotkey, event)) {
-              event.preventDefault();
-              const mark = HOTKEYS[hotkey];
-              toggleMark(editor, mark);
+    <div style={{ pointerEvents: "none" }}>
+      <Slate editor={editor} value={value}>
+        <Editable
+          disabled={true}
+          renderElement={renderElement}
+          renderLeaf={renderLeaf}
+          placeholder="TEXT CONTAINER"
+          spellCheck
+          autoFocus
+          onKeyDown={(event) => {
+            for (const hotkey in HOTKEYS) {
+              if (isHotkey(hotkey, event)) {
+                event.preventDefault();
+                const mark = HOTKEYS[hotkey];
+                toggleMark(editor, mark);
+              }
             }
-          }
-        }}
-      />
-    </Slate>
+          }}
+        />
+      </Slate>
+    </div>
   );
 };
 

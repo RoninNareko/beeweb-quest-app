@@ -1,12 +1,23 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import React from "react";
+import { db } from "../../config/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 import "./Login.scss";
 
 export default function Login(params) {
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     console.log("Received values of form: ", values);
+    const docRef = doc(db, "users", values["login"]);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      console.log("Document data:", docSnap.data());
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+    }
   };
 
   return (
@@ -18,12 +29,12 @@ export default function Login(params) {
         onFinish={onFinish}
       >
         <Form.Item
-          name="username"
-          rules={[{ required: true, message: "Please input your Username!" }]}
+          name="login"
+          rules={[{ required: true, message: "Please input your Login!" }]}
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Username"
+            placeholder="Login"
           />
         </Form.Item>
         <Form.Item

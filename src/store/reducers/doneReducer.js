@@ -1,12 +1,12 @@
-import { ADD_BACKLOG_TASK } from "../actions/backlog";
+import { ADD_DONE_TASK } from "../actions/done";
 
 const defaultState = {
   tasks: [],
 };
 
-export function backlogReducer(state = defaultState, action) {
+export function doneReducer(state = defaultState, action) {
   switch (action.type) {
-    case ADD_BACKLOG_TASK: {
+    case ADD_DONE_TASK: {
       const newTask = {
         id: Math.floor(Math.random() * 100),
         editorValue: action.payload,

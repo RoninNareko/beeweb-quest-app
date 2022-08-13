@@ -1,103 +1,71 @@
-import { Card, Button, Badge } from "antd";
 import { selectBacklogTasks } from "../../../store/selectors/backlogSelectors";
-import { useSelector, useDispatch } from "react-redux";
-import { addBacklogTaskActionCreator } from "../../../store/actions/backlog";
+import { useSelector } from "react-redux";
 
+import TaskCard from "./TaskCard";
+import Header from "./Header";
+import { selectInProgressTasks } from "../../../store/selectors/InProgressSelectors";
+import { selectDoneTasks } from "../../../store/selectors/doneSelectors";
 import "./DashboardContent.scss";
-import RichTextExample from "../SlateEditor/RichTextExample";
-import { useEffect, useState } from "react";
-import TextContainer from "../SlateEditor/TextContainer";
 
-const Header = () => (
-  <header
-    style={{
-      marginBottom: "10px",
-    }}
-  >
-    <Badge count={"backlog"} />
-  </header>
-);
-
-const TaskCard = ({ taskData }) => {
-  const dispatch = useDispatch();
-  const [isOpen, setOpen] = useState(false);
-  const [editorValue, setEditorValue] = useState(null);
-  useEffect(() => {
-    if (taskData && taskData.editorValue) {
-      setEditorValue(taskData.editorValue);
-    }
-  }, [taskData]);
-
-  const onChangeEditor = (value) => {
-    setEditorValue(value);
-  };
-  const addNewTask = (e) => {
-    e.preventDefault();
-    setOpen(true);
-    dispatch(addBacklogTaskActionCreator(editorValue));
-  };
-
+const TaskBlock = ({ tasks = [], InProgress = false, done = false }) => {
   return (
-    <section className="card-section">
-      <Card>{editorValue && <TextContainer editorValue={editorValue} />}</Card>
-      {!isOpen && (
-        <Button onClick={() => setOpen(true)} type="text" danger>
-          + New
-        </Button>
+    <>
+      {tasks.length ? (
+        tasks.map((el, idx, arr) => {
+          const isLastTask = idx === arr.length - 1;
+          return (
+            <TaskCard
+              InProgress={InProgress}
+              done={done}
+              key={el.id}
+              taskData={el}
+              allTasks={tasks}
+              isLastTask={isLastTask}
+            />
+          );
+        })
+      ) : (
+        <TaskCard taskData={false} InProgress={InProgress} done={done} />
       )}
-      {isOpen && (
-        <>
-          <Card className="editor-card">
-            <RichTextExample onChangeEditor={onChangeEditor} />
-          </Card>
-          <Button type="primary" onClick={addNewTask}>
-            Add Task
-          </Button>
-        </>
-      )}
-    </section>
+    </>
   );
 };
 
 const Backlog = ({ backlogTasks }) => {
-  console.log("backlogTasks", backlogTasks);
   return (
     <section className="backlog">
-      <Header />
-      {backlogTasks.length &&
-        backlogTasks.map((el) => {
-          return <TaskCard key={el.id} taskData={el} />;
-        })}
+      <Header count={"Backlog"} />
+      <TaskBlock tasks={backlogTasks} />
     </section>
   );
 };
-const ToDo = () => {
+const InProgress = ({ inProgressTasks }) => {
   return (
-    <section className="toDo">
-      <Header />
-      <TaskCard />
-      <TaskCard />
+    <section className="inProgress">
+      <Header count={"In progress"} />
+      <TaskBlock tasks={inProgressTasks} InProgress={true} />
     </section>
   );
 };
-const Done = () => {
+const Done = ({ doneTasks }) => {
   return (
     <section className="done">
-      <Header />
-      <TaskCard />
-      <TaskCard />
+      <Header count={"Done"} />
+      <TaskBlock tasks={doneTasks} done={true} />
     </section>
   );
 };
 
 function DashboardContent(params) {
   const backlogTasks = useSelector(selectBacklogTasks);
-  console.log("backlogTasks list", backlogTasks);
+  const inProgressTasks = useSelector(selectInProgressTasks);
+  const doneTasks = useSelector(selectDoneTasks);
+
   return (
     <section className="dashboard-content-section">
       <Backlog backlogTasks={backlogTasks} />
-      <ToDo />
-      <Done />
+      <InProgress inProgressTasks={inProgressTasks} />
+      <Done doneTasks={doneTasks} />
     </section>
   );
 }
