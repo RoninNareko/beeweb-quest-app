@@ -91,16 +91,18 @@ function DashboardContent(params) {
     }, 0);
   });
 
-  if (sortMode === "byName") {
-    sortByName(backlogTasks);
-    sortByName(inProgressTasks);
-    sortByName(doneTasks);
-  }
-  if (sortMode === "byDate") {
-    sortByDate(backlogTasks);
-    sortByDate(inProgressTasks);
-    sortByDate(doneTasks);
-  }
+  useEffect(() => {
+    if (sortMode === "byName") {
+      sortByName(backlogTasks);
+      sortByName(inProgressTasks);
+      sortByName(doneTasks);
+    }
+    if (sortMode === "byDate") {
+      sortByDate(backlogTasks);
+      sortByDate(inProgressTasks);
+      sortByDate(doneTasks);
+    }
+  }, [sortMode, backlogTasks, doneTasks, inProgressTasks]);
 
   return (
     <section className="dashboard-content-section" ref={myRef}>
