@@ -12,6 +12,9 @@ import "./DashboardContent.scss";
 import { selectSort } from "../../../store/selectors/sortSelectors";
 import { sortByName } from "../../../helpers/sortByName";
 import { sortByDate } from "../../../helpers/sortByDate";
+import { fetchBacklogTasksActionCreator } from "../../../store/actions/backlog";
+import { fetchinProgressTasksActionCreator } from "../../../store/actions/inProgress";
+import { fetchinDoneTasksActionCreator } from "../../../store/actions/done";
 
 const TaskBlock = ({ tasks = [], InProgress = false, done = false }) => {
   return (
@@ -72,6 +75,11 @@ function DashboardContent(params) {
   const myRef = React.useRef();
 
   useEffect(() => {
+    //reset
+    dispatch(fetchBacklogTasksActionCreator([]));
+    dispatch(fetchinProgressTasksActionCreator([]));
+    dispatch(fetchinDoneTasksActionCreator([]));
+    //fetch
     dispatch(fetchTasks("backlog"));
     dispatch(fetchTasks("inProgress"));
     dispatch(fetchTasks("done"));

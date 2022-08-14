@@ -29,8 +29,8 @@ const TaskCard = ({ taskData, allTasks, isLastTask, InProgress, done }) => {
 
   const sendData = async (table) => {
     const editorValueData = { editorValue: editorValue, date: new Date() };
-
-    await setDoc(doc(db, table, userData.email), {
+    console.log("userData.uid", userData.uid);
+    await setDoc(doc(db, table, userData.uid), {
       allTasks: !allTasks ? [editorValueData] : [...allTasks, editorValueData],
     });
   };

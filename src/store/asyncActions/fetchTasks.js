@@ -8,8 +8,8 @@ export function fetchTasks(payload) {
   // The `extraArgument` is the third arg for thunk functions
   return async (dispatch, getState, api) => {
     const state = getState();
-    const email = state.authentication.userData.email;
-    const docRef = doc(db, payload, email);
+    const uid = state.authentication.userData.uid;
+    const docRef = doc(db, payload, uid);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       const tasks = docSnap.data().allTasks;
@@ -20,11 +20,6 @@ export function fetchTasks(payload) {
       } else {
         dispatch(fetchinDoneTasksActionCreator(tasks));
       }
-    } else {
-      dispatch(fetchBacklogTasksActionCreator([]));
-      dispatch(fetchinProgressTasksActionCreator([]));
-      dispatch(fetchinDoneTasksActionCreator([]));
-      // doc.data() will be undefined in this case
     }
   };
 }
