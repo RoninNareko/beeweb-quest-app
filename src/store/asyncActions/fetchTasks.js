@@ -1,5 +1,5 @@
 import { fetchBacklogTasksActionCreator } from "../actions/backlog";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { fetchinProgressTasksActionCreator } from "../actions/inProgress";
 import { fetchinDoneTasksActionCreator } from "../actions/done";
@@ -7,11 +7,11 @@ import { fetchinDoneTasksActionCreator } from "../actions/done";
 export function fetchTasks(payload) {
   // The `extraArgument` is the third arg for thunk functions
   return async (dispatch, getState, api) => {
-    const docRef = doc(db, payload, "narek");
+    const state = getState();
+    const email = state.authentication.userData.email;
+    const docRef = doc(db, payload, email);
     const docSnap = await getDoc(docRef);
-
     if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data().allTasks);
       const tasks = docSnap.data().allTasks;
       if (payload === "backlog") {
         dispatch(fetchBacklogTasksActionCreator(tasks));
@@ -21,8 +21,10 @@ export function fetchTasks(payload) {
         dispatch(fetchinDoneTasksActionCreator(tasks));
       }
     } else {
+      dispatch(fetchBacklogTasksActionCreator([]));
+      dispatch(fetchinProgressTasksActionCreator([]));
+      dispatch(fetchinDoneTasksActionCreator([]));
       // doc.data() will be undefined in this case
-      console.log("No such document!");
     }
   };
 }

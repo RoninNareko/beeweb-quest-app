@@ -2,18 +2,21 @@ import { Card, Button } from "antd";
 import RichTextExample from "../SlateEditor/RichTextExample";
 import { useEffect, useState } from "react";
 import TextContainer from "../SlateEditor/TextContainer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { doc, setDoc } from "firebase/firestore";
 import { addBacklogTaskActionCreator } from "../../../store/actions/backlog";
 import { addInProgressTaskActionCreator } from "../../../store/actions/inProgress";
 import { addDoneTaskActionCreator } from "../../../store/actions/done";
 import { db } from "../../../config/firebase";
+import { selectAuthenticationData } from "../../../store/selectors/authenticationSelectors";
 
 const TaskCard = ({ taskData, allTasks, isLastTask, InProgress, done }) => {
+  const authentication = useSelector(selectAuthenticationData);
+  const userData = authentication["userData"];
   const dispatch = useDispatch();
   const [isOpen, setOpen] = useState(false);
   const [editorValue, setEditorValue] = useState(null);
-  console.log("editorValue", editorValue);
+
   useEffect(() => {
     if (taskData && taskData.editorValue) {
       setEditorValue(taskData.editorValue);
@@ -23,30 +26,26 @@ const TaskCard = ({ taskData, allTasks, isLastTask, InProgress, done }) => {
   const onChangeEditor = (value) => {
     setEditorValue(value);
   };
+
+  const sendData = async (table) => {
+    const editorValueData = { editorValue: editorValue, date: new Date() };
+
+    await setDoc(doc(db, table, userData.email), {
+      allTasks: !allTasks ? [editorValueData] : [...allTasks, editorValueData],
+    });
+  };
+
   const addNewTask = async (e) => {
     e.preventDefault();
     setOpen(false);
-    const editorValueData = { editorValue: editorValue };
     if (InProgress) {
-      await setDoc(doc(db, "inProgress", "narek"), {
-        allTasks: !allTasks
-          ? [editorValueData]
-          : [...allTasks, editorValueData],
-      });
+      sendData("inProgress");
       dispatch(addInProgressTaskActionCreator(editorValue));
     } else if (done) {
-      await setDoc(doc(db, "done", "narek"), {
-        allTasks: !allTasks
-          ? [editorValueData]
-          : [...allTasks, editorValueData],
-      });
+      sendData("done");
       dispatch(addDoneTaskActionCreator(editorValue));
     } else {
-      await setDoc(doc(db, "backlog", "narek"), {
-        allTasks: !allTasks
-          ? [editorValueData]
-          : [...allTasks, editorValueData],
-      });
+      sendData("backlog");
 
       dispatch(addBacklogTaskActionCreator(editorValue));
     }

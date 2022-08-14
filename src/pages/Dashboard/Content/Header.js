@@ -1,12 +1,19 @@
 import { Badge } from "antd";
 
-const Header = ({ count }) => (
+const Header = ({ count, backgroundColor }) => (
   <header
     style={{
       marginBottom: "10px",
     }}
   >
-    <Badge count={count} />
+    <Badge
+      style={{
+        backgroundColor,
+        color: "rgb(64, 44, 27)",
+        fontSize: "14px",
+      }}
+      count={count}
+    />
   </header>
 );
 

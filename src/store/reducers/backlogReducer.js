@@ -10,6 +10,7 @@ export function backlogReducer(state = defaultState, action) {
       const newTask = {
         id: Math.floor(Math.random() * 100),
         editorValue: action.payload,
+        date: new Date(),
       };
       return {
         ...state,

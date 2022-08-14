@@ -1,13 +1,40 @@
-import { Button, Form, Input } from "antd";
-import { doc, setDoc } from "firebase/firestore";
-import { db } from "../../config/firebase";
+import { Button, Form, Input, Typography } from "antd";
 
+import { useDispatch } from "react-redux";
+
+import { authenticationActionCreator } from "../../store/actions/authentication";
+import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./Signup.scss";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { useEffect, useState } from "react";
+const { Text } = Typography;
 
 export default function Signup(params) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(authenticationActionCreator(null));
+  }, [dispatch]);
+
+  const [errorMessage, setErrorMessage] = useState("");
   const onFinish = async (values) => {
-    console.log("Success:", values);
-    await setDoc(doc(db, "users", values["login"]), values);
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, values["email"], values["password"])
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log("user is ok ", user.email);
+        dispatch(authenticationActionCreator(user));
+        navigate("/dashboard");
+        // ...
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        setErrorMessage(errorMessage);
+        // ..
+      });
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -25,28 +52,32 @@ export default function Signup(params) {
         autoComplete="off"
       >
         <Form.Item
-          label="Login"
-          name="login"
-          rules={[{ required: true, message: "Please input your login!" }]}
+          label="email"
+          name="email"
+          rules={[
+            {
+              required: true,
+              message: "Please input your email!",
+              type: "email",
+            },
+          ]}
         >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="Username"
-          name="username"
-          rules={[{ required: true, message: "Please input your username!" }]}
-        >
-          <Input />
+          <Input placeholder="Email" />
         </Form.Item>
 
         <Form.Item
           label="Password"
           name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
+          rules={[
+            {
+              required: true,
+              message: "Please input your Password!",
+              type: "password",
+            },
+          ]}
         >
-          <Input.Password />
+          <Input.Password placeholder="Password" />
         </Form.Item>
-
         <Form.Item>
           <Button
             type="primary"
@@ -55,8 +86,9 @@ export default function Signup(params) {
           >
             Register
           </Button>
-          Or <a href="/login">Login now!</a>
+          Or <NavLink to="/login">Login now!</NavLink>
         </Form.Item>
+        <Text type="danger">{errorMessage}</Text>
       </Form>
     </section>
   );

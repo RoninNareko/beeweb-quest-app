@@ -21,3 +21,12 @@
 .dashboard-section {
   height: 100%;
 }
+.middle-menu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  div {
+    margin-left: 10px;
+  }
+}
