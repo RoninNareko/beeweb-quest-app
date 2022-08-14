@@ -1,5 +1,5 @@
 import { fetchBacklogTasksActionCreator } from "../actions/backlog";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { fetchinProgressTasksActionCreator } from "../actions/inProgress";
 import { fetchinDoneTasksActionCreator } from "../actions/done";
